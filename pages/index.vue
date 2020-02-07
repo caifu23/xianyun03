@@ -22,8 +22,8 @@
 
         <!-- 输入框 -->
         <el-row type="flex" align="middle" class="search-input">
-          <input :placeholder="searchList[current].placeholder"/>
-          <i class="el-icon-search"></i>
+          <input :placeholder="searchList[current].placeholder" v-model.trim="searchKey" @keydown.enter="toSearch"/>
+          <i class="el-icon-search" @click="toSearch" ></i>
         </el-row>
       </div>
     </div>
@@ -34,8 +34,9 @@
 export default {
   data() {
     return {
-      current: 0,
-      banners: [],
+      current: 0,  // 当前tab的索引
+      banners: [],  // 轮播图
+      // tab栏数据
       searchList: [
         {
           text: '攻略',
@@ -52,7 +53,8 @@ export default {
           placeholder: '',
           pageUrl: '/air'
         }
-      ]
+      ],
+      searchKey: ''  // 搜索关键词
     };
   },
   mounted() {
@@ -75,11 +77,21 @@ export default {
     // 切换tab
     tabClick(index) {
       this.current = index
-
       // 如果点击的是 机票，则跳转
       if(index === 2) {
         this.$router.push(this.searchList[index].pageUrl)
       }
+    },
+    // 点击搜索图标
+    toSearch() {
+      console.log(this.searchKey)
+      if(!this.searchKey) {
+        // 非空提示
+        this.$message.error('没有输入关键词')
+        return;
+      }
+      // 跳转相应的 搜索结果页面
+      this.$router.push(this.searchList[this.current].pageUrl + this.searchKey)
     }
   }
 };
