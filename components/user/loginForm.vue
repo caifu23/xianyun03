@@ -39,8 +39,8 @@ export default {
 
       return {
         loginForm: {
-          username: '',
-          password: '',
+          username: '',   // 用户名
+          password: '',   // 密码
         },
         rules: {
           username: [
@@ -54,17 +54,20 @@ export default {
     },
     methods: {
       submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+        this.$refs[formName].validate(async (valid) => {
           if (valid) {
             alert('submit!');
+            let resLogin = await this.$axios({
+                method: 'POST',
+                url: '/accounts/login',
+                data: this[formName]
+            })
+            console.log(resLogin)
           } else {
             console.log('error submit!!');
             return false;
           }
         });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
       }
     }
   }
