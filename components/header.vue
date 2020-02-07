@@ -50,7 +50,7 @@
 export default {
   data() {
     return {
-      loginStatu: true
+      loginStatu: false
     };
   }
 };
@@ -113,7 +113,10 @@ export default {
   }
   .login-link {
     font-size: 13px;
-    color: red;
+    &:hover {
+      color: #409eff;
+      text-decoration: underline; 
+    }
   }
 }
 </style>
