@@ -9,6 +9,14 @@ export const mutations = {
     // 保存用户信息
     setUserInfo(state, data) {  
         state.userInfo = data
+    },
+    // 清除用户数据
+    cleanUserInfo(state, info) {
+        // 判断是否为 浏览器
+        if(process.browser) {
+            localStorage.removeItem('userInfo')
+        }
+        state.userInfo = {}
     }
 }
 
