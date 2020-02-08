@@ -71,9 +71,16 @@ export default {
       submitForm(formName) {
         this.$refs[formName].validate( (valid) => {
           if (valid) {
-            alert('submit!');
             // 登录请求
-            this.login(this[formName])
+            // this.login(this[formName])
+            // 或--
+            // 登录(异步)请求由 store里的actions处理
+            this.$store.dispatch('user/login', this[formName]).then(() => {
+                this.$message.success('登录成功')
+                // 跳转主页
+                this.$router.push('/')
+            })
+
           } else {
             console.log('error submit!!');
             return false;
