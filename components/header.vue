@@ -9,10 +9,7 @@
       </div>
       <!-- 菜单栏  -->
       <el-row type="flex" class="navs" align="middle">
-        <nuxt-link to="/"  exact-active-class="active">首页</nuxt-link>
-        <nuxt-link to="/post" exact-active-class="active">旅游攻略</nuxt-link>
-        <nuxt-link to="/hotel" exact-active-class="active">酒店</nuxt-link>
-        <nuxt-link to="/air" exact-active-class="active">国内机票</nuxt-link>
+        <nuxt-link v-for="(item, index) in navsList" :to="item.links"  exact-active-class="active" :key="index"> {{ item.name }} </nuxt-link>
       </el-row>
       <!-- 登录/用户信息  -->
       <el-row type="flex" align="middle">
@@ -50,7 +47,27 @@
 export default {
   data() {
     return {
-      loginStatu: false
+      // 登录状态
+      loginStatu: false,
+      // 菜单栏 数据
+      navsList: [
+        {
+          name: '首页',
+          links: '/'
+        },
+        {
+          name: '旅游攻略',
+          links: '/post'
+        },
+        {
+          name: '酒店',
+          links: '/hotel'
+        },
+        {
+          name: '国内机票',
+          links: '/air'
+        }
+      ]
     };
   }
 };
