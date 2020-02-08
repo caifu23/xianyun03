@@ -31,7 +31,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui'
+    '@/plugins/element-ui',
+    '~/plugins/axios'  // 自定义axios配置
   ],
   /*
   ** Nuxt.js dev-modules

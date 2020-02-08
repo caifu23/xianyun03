@@ -27,13 +27,18 @@
         <!-- 如果用户已登录，则显示 用户信息-->
         <el-dropdown v-if="loginStatu" class="account">
           <span class="el-dropdown-link">
-            <img src="http://157.122.54.189:9095/assets/images/avatar.jpg" alt />
-            地球发动机
+            <img :src="$axios.defaults.baseURL+userInfo.defaultAvatar" alt />
+            {{ userInfo.nickname }}
             <i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人中心</el-dropdown-item>
-            <el-dropdown-item divided>退出</el-dropdown-item>
+            <!-- 链接 -->
+            <el-dropdown-item>
+              <nuxt-link to="#">个人中心</nuxt-link>
+            </el-dropdown-item>
+            <el-dropdown-item >
+              <div class="logout" @click="handlerLogout">退出</div>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <!-- 没有登录，则显示登录/注册 -->
@@ -48,7 +53,7 @@ export default {
   data() {
     return {
       // 登录状态
-      loginStatu: false,
+      // loginStatu: true,
       // 菜单栏 数据
       navsList: [
         {
@@ -67,8 +72,28 @@ export default {
           name: '国内机票',
           links: '/air'
         }
-      ]
+      ],
+      // 用户数据
+      userInfo: {}
     };
+  },
+  methods: {
+    // 退出登录
+    handlerLogout() {
+
+    }
+  },
+  computed: {
+    // 登录状态
+    loginStatu() {
+      if(this.$store.state.user.userInfo.token) {
+        this.userInfo = this.$store.state.user.userInfo.user
+        return true
+      }else {
+        return false
+      }
+      // return this.$store.state.user.userInfo.token 
+    }
   }
 };
 </script>
