@@ -32,7 +32,8 @@ export default {
   */
   plugins: [
     '@/plugins/element-ui',
-    '~/plugins/axios'  // 自定义axios配置
+    '~/plugins/axios',  // 自定义axios配置
+    { src: '~/plugins/localStorage.js', ssr: false } // 实现本地存储插件
   ],
   /*
   ** Nuxt.js dev-modules
