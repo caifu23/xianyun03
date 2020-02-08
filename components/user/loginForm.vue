@@ -103,9 +103,6 @@ export default {
                 // this.$router.push('/')
             }
      }
-    },
-    mounted () {
-        this.$store.commit('user/cleanUserInfo', '')
     }
   }
 </script>
