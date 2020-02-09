@@ -5,16 +5,21 @@
         <!-- 登录表单 -->
         <Loginform></Loginform>
       </el-tab-pane>
-      <el-tab-pane label="注册">注册页面</el-tab-pane>
+      <el-tab-pane label="注册">
+        <!-- 注册表单 -->
+        <Registerform></Registerform>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
 import Loginform from '@/components/user/loginForm'
+import Registerform from '@/components/user/registerForm'
 export default {
     components: {
       Loginform,
+      Registerform
     }
   }
 </script>
