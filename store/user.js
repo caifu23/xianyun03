@@ -35,5 +35,13 @@ export const actions = {
             }
             return Promise.resolve(res)
         })
+    },
+    // 发送验证码
+    sendCode(store, data) {
+        return this.$axios({
+            method: 'POST',
+            url: '/captchas',
+            data
+        })
     }
 }

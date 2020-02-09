@@ -51,7 +51,9 @@ export default {
     var validatePhone = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入用户名"));
-      } else {
+      } else if(!/^1[35789]\d{9}$/.test(value)) {
+        callback(new Error("手机号格式不正确"));
+      }else {
         callback();
       }
     };
@@ -111,11 +113,14 @@ export default {
     };
   },
   methods: {
-    // 点击登录按钮
+    // 点击注册按钮
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("submit!!");
+          const { checkPass, ...data } = this.registerForm
+          // 发起注册请求
+          this.register(data)
+
         } else {
           console.log("error submit!!");
           return false;
@@ -140,7 +145,17 @@ export default {
           return;
         }
         // 发起验证码
-        this.sendCode()
+        // this.sendCode()
+        // 或--
+        this.$store.dispatch('user/sendCode', { tel: this.registerForm.username }).then((res) => {
+          console.log(res)
+          if(res.data.code) {
+            this.$message.success(`模拟手机验证码为: ${res.data.code}`)
+            // 触发验证码 验证
+            this.$refs.registerForm.validateField("captcha")
+          }
+        })
+
       } else {
         this.$alert("手机号码不能为空", "提示", {
           type: "error",
@@ -175,6 +190,25 @@ export default {
               this.$refs.captcha.focus();
             }
           })
+        }
+      })
+    },
+    // 发送注册请求
+    register(data) {
+      this.$axios({
+        method: 'POST',
+        url: '/accounts/register',
+        data
+      }).then((res) => {
+        // 注册成功
+        if(res.data.token) {
+          this.$message.success('注册成功')
+          // 存储用户信息
+          this.$store.commit('user/setUserInfo', {
+            token: res.data.token,
+            user: res.data.user
+          })
+          this.$router.push('/')
         }
       })
     }
