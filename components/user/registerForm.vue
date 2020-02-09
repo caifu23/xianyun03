@@ -147,8 +147,11 @@ export default {
           confirmButtonText: "确定",
           callback: action => {
             // 让手机号输入框失焦
-            this.$refs.phone.focus();
-            this.$refs.phone.blur();
+            // this.$refs.phone.focus();
+            // this.$refs.phone.blur();
+            // 或----------
+            // 直接触发,手机号的验证
+            this.$refs.registerForm.validateField("username")
           }
         });
       }

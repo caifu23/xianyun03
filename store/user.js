@@ -28,12 +28,12 @@ export const actions = {
             url: '/accounts/login',
             data
         }).then((res) => {
-            console.log(res)
-            if(res.data.token) {
+            if(res.data && res.data.token) {
                 let { data } = res
                 // 将当前用户数据存储到store
                 store.commit('setUserInfo', data)
             }
+            return Promise.resolve(res)
         })
     }
 }

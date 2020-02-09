@@ -75,10 +75,13 @@ export default {
             // this.login(this[formName])
             // 或--
             // 登录(异步)请求由 store里的actions处理
-            this.$store.dispatch('user/login', this[formName]).then(() => {
-                this.$message.success('登录成功')
-                // 跳转主页
-                this.$router.push('/')
+            this.$store.dispatch('user/login', this[formName]).then((res) => {
+                // console.log(res)
+                if(res.data.token) {
+                    this.$message.success('登录成功')
+                    // 跳转主页
+                    this.$router.push('/')
+                }
             })
 
           } else {
