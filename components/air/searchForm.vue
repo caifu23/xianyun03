@@ -13,6 +13,7 @@
             :fetch-suggestions="searchDepart"
             placeholder="请搜索出发城市"
             @select="selectDepart"
+            @blur="blurDepart"
           ></el-autocomplete>
         </div>
         <!-- 到达城市搜索框 -->
@@ -23,15 +24,21 @@
             :fetch-suggestions="searchDest"
             placeholder="请搜索到达城市"
             @select="selectDest"
+            @blur="blurDest"
           ></el-autocomplete>
         </div>
         <!-- 出发时间选择 -->
         <div class="dateDepart searchBox">
-          <span> 出发时间 </span>
-          <el-date-picker v-model="ticketKey.departDate" type="date" placeholder="选择日期"></el-date-picker>
+          <span>出发时间</span>
+          <el-date-picker
+            v-model="ticketKey.departDate"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择日期"
+          ></el-date-picker>
         </div>
         <div class="searchBtn">
-            <el-button type="primary" icon="el-icon-search">搜索</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
         </div>
       </el-tab-pane>
       <el-tab-pane>
@@ -49,7 +56,8 @@ export default {
   data() {
     return {
       //   搜索结果
-      searchRes: [{ value: "广州" }, { value: "深圳" }, { value: "北京" }],
+      searchDepartRes: [],
+      searchDestRes: [],
       //   机票搜索词
       ticketKey: {
         departCity: "", // 出发城市
@@ -76,27 +84,124 @@ export default {
     searchDepart(queryString, cb) {
       if (!queryString) {
         // 非空判断
+        cb([]);
         return;
       }
-      console.log(queryString);
-      cb(this.searchRes);
+      this.$axios({
+        method: "GET",
+        url: "/airs/city",
+        params: {
+          name: queryString
+        }
+      }).then(res => {
+        console.log(res);
+        let { data } = res.data;
+        //   如果搜索结果为零
+        if (data.length === 0) {
+          cb([]);
+          return;
+        }
+        this.searchDepartRes = data.map(v => {
+          v.value = v.name.replace("市", "");
+          return v;
+        });
+        console.log(data);
+        cb(this.searchDepartRes);
+      });
     },
     // 出发地选择
     selectDepart(item) {
       console.log(item);
+      this.ticketKey.departCity = item.value;
+      this.ticketKey.departCode = item.sort;
     },
     // 查询到达地
     searchDest(queryString, cb) {
       if (!queryString) {
         // 非空判断
+        cb([]);
         return;
       }
-      console.log(queryString);
-      cb(this.searchRes);
+      this.$axios({
+        method: "GET",
+        url: "/airs/city",
+        params: {
+          name: queryString
+        }
+      }).then(res => {
+        console.log(res);
+        let { data } = res.data;
+        //   如果搜索结果为零
+        if (data.length === 0) {
+          cb([]);
+          return;
+        }
+        this.searchDestRes = data.map(v => {
+          v.value = v.name.replace("市", "");
+          return v;
+        });
+        console.log(data);
+        cb(this.searchDestRes);
+      });
+    },
+    // 出发地输入框失焦
+    blurDepart() {
+      // 若用户没有选择下拉项,则默认第一个
+      if (this.searchDepartRes[0]) {
+        this.ticketKey.departCity = this.searchDepartRes[0].value;
+        this.ticketKey.departCode = this.searchDepartRes[0].sort;
+      }
     },
     // 到达地选择
     selectDest(item) {
-      console.log(item);
+      this.ticketKey.destCity = item.value;
+      this.ticketKey.destCode = item.sort;
+    },
+    // 到达地输入框失焦
+    blurDest() {
+      if (this.searchDestRes[0]) {
+        this.ticketKey.destCity = this.searchDestRes[0].value;
+        this.ticketKey.destCode = this.searchDestRes[0].sort;
+      }
+    },
+    // 点击搜索按钮
+    searchBtn() {
+      console.log(this.ticketKey);
+      //   非空判断
+      if (!this.ticketKey.departCity) {
+        this.$alert("请选择出发城市", "提示", {
+          confirmButtonText: "确定",
+          type: 'warning'
+        });
+        return;
+      }
+      if (!this.ticketKey.destCity) {
+        this.$alert("请选择到达城市", "提示", {
+          confirmButtonText: "确定",
+          type: 'warning'
+        });
+        return;
+      }
+      if (!this.ticketKey.departDate) {
+        this.$alert("请选择出发时间", "提示", {
+          confirmButtonText: "确定",
+          type: 'warning'
+        });
+        return;
+      }
+      if(!this.ticketKey.destCode || !this.ticketKey.departCode) {
+          this.$alert("出发或者到达城市不存在，请在下拉框中选择城市", "提示", {
+            confirmButtonText: "确定",
+            type: 'warning'
+          });
+          return;
+      }
+      //   跳转搜索结果页
+      this.$router.push({
+          path: '/air/flights',
+          query: this.ticketKey
+      })
+
     }
   }
 };
@@ -112,7 +217,7 @@ export default {
   text-align: center;
 }
 /deep/.el-tabs--border-card {
-    height: 100%;
+  height: 100%;
   & > .el-tabs__header {
     .el-tabs__item {
       &.is-active {
@@ -123,25 +228,28 @@ export default {
 }
 
 .serchAir {
-    height: 350px;
-    .searchBox {
-        margin-bottom: 15px;
-        &>span {
-            margin: 0 5px;
-            font-size: 12px;
-        }
+  height: 350px;
+  .searchBox {
+    margin-bottom: 15px;
+    & > span {
+      margin: 0 5px;
+      font-size: 12px;
     }
-    .dateDepart {
-        /deep/.el-input__inner {
-            width: 206px;
-        }
+  }
+  .dateDepart {
+    /deep/.el-input__inner {
+      width: 206px;
     }
-    .searchBtn {
-        text-align: center;
-        button {
-            width: 206px;
-            margin: 0 auto;
-        }
+    /deep/ .el-input__suffix {
+      right: 15px;
     }
+  }
+  .searchBtn {
+    text-align: center;
+    button {
+      width: 206px;
+      margin: 0 auto;
+    }
+  }
 }
 </style>
