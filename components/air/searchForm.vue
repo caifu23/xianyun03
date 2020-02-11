@@ -37,8 +37,12 @@
             placeholder="选择日期"
           ></el-date-picker>
         </div>
+        <!-- 搜索按钮 -->
         <div class="searchBtn">
           <el-button type="primary" icon="el-icon-search" @click="searchBtn">搜索</el-button>
+        </div>
+        <div class="changeCity">
+          <a href="#" class="changeText" @click="exchangeCity">换</a>
         </div>
       </el-tab-pane>
       <el-tab-pane>
@@ -164,6 +168,15 @@ export default {
         this.ticketKey.destCode = this.searchDestRes[0].sort;
       }
     },
+    // 互换起始城市
+    exchangeCity() {
+        let tmpCity = this.ticketKey.departCity
+        let tmpCode = this.ticketKey.departCode
+        this.ticketKey.departCity = this.ticketKey.destCity
+        this.ticketKey.departCode = this.ticketKey.destCode
+        this.ticketKey.destCity = tmpCity
+        this.ticketKey.destCode = tmpCode
+    },
     // 点击搜索按钮
     searchBtn() {
       console.log(this.ticketKey);
@@ -171,37 +184,36 @@ export default {
       if (!this.ticketKey.departCity) {
         this.$alert("请选择出发城市", "提示", {
           confirmButtonText: "确定",
-          type: 'warning'
+          type: "warning"
         });
         return;
       }
       if (!this.ticketKey.destCity) {
         this.$alert("请选择到达城市", "提示", {
           confirmButtonText: "确定",
-          type: 'warning'
+          type: "warning"
         });
         return;
       }
       if (!this.ticketKey.departDate) {
         this.$alert("请选择出发时间", "提示", {
           confirmButtonText: "确定",
-          type: 'warning'
+          type: "warning"
         });
         return;
       }
-      if(!this.ticketKey.destCode || !this.ticketKey.departCode) {
-          this.$alert("出发或者到达城市不存在，请在下拉框中选择城市", "提示", {
-            confirmButtonText: "确定",
-            type: 'warning'
-          });
-          return;
+      if (!this.ticketKey.destCode || !this.ticketKey.departCode) {
+        this.$alert("出发或者到达城市不存在，请在下拉框中选择城市", "提示", {
+          confirmButtonText: "确定",
+          type: "warning"
+        });
+        return;
       }
       //   跳转搜索结果页
       this.$router.push({
-          path: '/air/flights',
-          query: this.ticketKey
-      })
-
+        path: "/air/flights",
+        query: this.ticketKey
+      });
     }
   }
 };
@@ -226,6 +238,12 @@ export default {
     }
   }
 }
+/deep/ .el-tabs__content{
+    .el-tab-pane {
+        position: relative;
+        // background-color: pink;
+    }
+}
 
 .serchAir {
   height: 350px;
@@ -249,6 +267,61 @@ export default {
     button {
       width: 206px;
       margin: 0 auto;
+    }
+  }
+  .changeCity {
+    position: absolute;
+    top: 40px;
+    right: -9px;
+    background-color: #999999;
+    &::before {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: -18px;
+      left: -23px;
+      height: 1px;
+      width: 160%;
+      background-color: rgb(200, 200, 200);
+    }
+    &::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 38px;
+      left: -23px;
+      height: 1px;
+      width: 160%;
+      background-color: rgb(200, 200, 200);
+    }
+    a {
+      display: block;
+      width: 20px;
+      height: 20px;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
+      color: #fff;
+      &::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: -18px;
+        left: 10px;
+        width: 1px;
+        height: 16px;
+        background-color: rgb(200, 200, 200);
+      }
+      &::after {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 20px;
+        left: 10px;
+        width: 1px;
+        height: 18px;
+        background-color: rgb(200, 200, 200);
+      }
     }
   }
 }

@@ -7,13 +7,13 @@ export const state = () => {
 
 export const mutations = {
     // 保存用户信息
-    setUserInfo(state, data) {  
+    setUserInfo(state, data) {
         state.userInfo = data
     },
     // 清除用户数据
     cleanUserInfo(state, info) {
         // 判断是否为 浏览器
-        if(process.browser) {
+        if (process.browser) {
             localStorage.removeItem('userInfo')
         }
         state.userInfo = {}
@@ -28,7 +28,7 @@ export const actions = {
             url: '/accounts/login',
             data
         }).then((res) => {
-            if(res.data && res.data.token) {
+            if (res.data && res.data.token) {
                 let { data } = res
                 // 将当前用户数据存储到store
                 store.commit('setUserInfo', data)
