@@ -111,6 +111,9 @@ export default {
   }
   
 // }
+.header {
+  box-shadow: 1px 1px 1px #ccc;
+}
 
 .main {
   margin: 0 auto;
