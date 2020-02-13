@@ -9,7 +9,7 @@
             <!-- 机票头部 -->
             <FlightsListHead></FlightsListHead>
             <!-- 机票列表项 -->
-            <FlightsItem></FlightsItem>
+            <FlightsItem v-for="(item,index) in flightData.flights" :flightsList="item" :key="index"></FlightsItem>
         </div>
         列去
       </el-col>
@@ -26,18 +26,40 @@ import FlightsItem from '@/components/air/flightsItem'
 
 export default {
   data() {
-    return {};
+    return {
+        query: {},   // 查询关键字
+        flightData: {}
+    }
   },
   methods: {
     // 获取查询关键字
     getQuery() {
       const query = this.$route.query;
-      console.log(query);
+      if(query) {
+          this.query = query
+      }
+    },
+    // 查询机票列表
+    getFlightsList() {
+        if(this.query) {
+            this.$axios({
+                method: 'GET',
+                url: '/airs',
+                params: this.query
+            }).then(res => {
+                console.log(res)
+                if(res.data.info) {
+                    this.flightData = res.data
+                }
+            })
+        }
     }
   },
   mounted() {
     // 获取查询关键字
-    this.getQuery();
+    this.getQuery()
+    // 获取机票列表
+    this.getFlightsList()
   },
   components: {
     FlightsListHead,
