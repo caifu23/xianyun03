@@ -8,6 +8,8 @@
         <div class="flights-content">
             <!-- 机票头部 -->
             <FlightsListHead></FlightsListHead>
+            <!-- 机票列表项 -->
+            <FlightsItem></FlightsItem>
         </div>
         列去
       </el-col>
@@ -20,6 +22,8 @@
 
 <script>
 import FlightsListHead from '@/components/air/flightsListHead'
+import FlightsItem from '@/components/air/flightsItem'
+
 export default {
   data() {
     return {};
@@ -36,7 +40,8 @@ export default {
     this.getQuery();
   },
   components: {
-    FlightsListHead
+    FlightsListHead,
+    FlightsItem
   }
 };
 </script>
