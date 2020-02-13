@@ -4,6 +4,7 @@
       <!-- 机票列表 -->
       <el-col class="flights-list">
         <!-- 机票筛选条件 -->
+        <FlightsFilter :flights="flightData"></FlightsFilter>
         <!-- 机票信息列表 -->
         <div class="flights-content">
           <!-- 机票头部 -->
@@ -28,7 +29,6 @@
             </el-pagination>
           </div>
         </div>
-        列去
       </el-col>
 
       <!-- 侧边栏: 历史查询 -->
@@ -40,12 +40,17 @@
 <script>
 import FlightsListHead from "@/components/air/flightsListHead";
 import FlightsItem from "@/components/air/flightsItem";
+import FlightsFilter from "@/components/air/flightsFilter";
 
 export default {
   data() {
     return {
       query: {}, // 查询关键字
-      flightData: {},
+      flightData: {
+        flights: [],
+        info: {},
+        options: {}
+      },
       currentPage: 1,
       pageSize: 5
     };
@@ -73,11 +78,13 @@ export default {
         });
       }
     },
+    // 改变每页条数
     handleSizeChange(val) {
-      this.pageSize = val
+      this.pageSize = val;
     },
+    // 改变当前第几页
     handleCurrentChange(val) {
-      this.currentPage = val
+      this.currentPage = val;
     }
   },
   mounted() {
@@ -88,16 +95,18 @@ export default {
   },
   components: {
     FlightsListHead,
-    FlightsItem
+    FlightsItem,
+    FlightsFilter
   },
   computed: {
-      currentFlights() {
-          let start = (this.currentPage - 1)*this.pageSize
-          let end = (this.currentPage )*this.pageSize
-          console.log(start, end)
-        //   this.currentPage
-          return this.flightData.flights && this.flightData.flights.slice(start, end)
-      }
+    //   当前飞机列表数组
+    currentFlights() {
+      let start = (this.currentPage - 1) * this.pageSize;
+      let end = this.currentPage * this.pageSize;
+      return (
+        this.flightData.flights && this.flightData.flights.slice(start, end)
+      );
+    }
   }
 };
 </script>
@@ -117,7 +126,8 @@ export default {
   }
 }
 .divide-page {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 </style>
