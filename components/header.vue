@@ -105,7 +105,7 @@ export default {
 <style lang="less">
 // 激活时的样式
 // a {
-  .active {
+  .navs a.active {
     color: #fff!important;
     background-color: #409eff;
   }
