@@ -34,7 +34,8 @@
             v-model="ticketKey.departDate"
             value-format="yyyy-MM-dd"
             type="date"
-            placeholder="选择日期"
+            :placeholder="`${new Date()}`"
+            :picker-options="pickerOptions"
           ></el-date-picker>
         </div>
         <!-- 搜索按钮 -->
@@ -69,6 +70,13 @@ export default {
         destCity: "", // 到达城市
         destCode: "", // 到达城市码
         departDate: "" // 出发时间
+      },
+      //   日期配置
+      pickerOptions: {
+        disabledDate(time) {
+          //   return 后的值为true则禁用
+          return time.getTime() + 3600 * 24 * 1000 < Date.now();
+        }
       }
     };
   },
@@ -150,11 +158,20 @@ export default {
     },
     // 出发地输入框失焦
     blurDepart() {
-      // 若用户没有选择下拉项,则默认第一个
-      if (this.searchDepartRes[0]) {
+      //   如果输入框值为空则清空
+      if (!this.ticketKey.departCity) {
+        //   也可以不清空,默认 城市值和城市码同存,
+        //   也就说 城市值非空会覆盖本次,所以城市码也会被覆盖
+        this.ticketKey.departCity = "";
+        this.ticketKey.departCode = "";
+        return;
+      }
+      // 若用户没有选择下拉项,则默认第一个(前提是出发城市输入非空)
+      if (this.searchDepartRes[0] && this.ticketKey.departCity) {
         this.ticketKey.departCity = this.searchDepartRes[0].value;
         this.ticketKey.departCode = this.searchDepartRes[0].sort;
       }
+      console.log(this.ticketKey);
     },
     // 到达地选择
     selectDest(item) {
@@ -163,19 +180,20 @@ export default {
     },
     // 到达地输入框失焦
     blurDest() {
-      if (this.searchDestRes[0]) {
+      if (this.searchDestRes[0] && this.ticketKey.destCity) {
         this.ticketKey.destCity = this.searchDestRes[0].value;
         this.ticketKey.destCode = this.searchDestRes[0].sort;
       }
+      this.searchDestRes[0] = [];
     },
     // 互换起始城市
     exchangeCity() {
-        let tmpCity = this.ticketKey.departCity
-        let tmpCode = this.ticketKey.departCode
-        this.ticketKey.departCity = this.ticketKey.destCity
-        this.ticketKey.departCode = this.ticketKey.destCode
-        this.ticketKey.destCity = tmpCity
-        this.ticketKey.destCode = tmpCode
+      let tmpCity = this.ticketKey.departCity;
+      let tmpCode = this.ticketKey.departCode;
+      this.ticketKey.departCity = this.ticketKey.destCity;
+      this.ticketKey.departCode = this.ticketKey.destCode;
+      this.ticketKey.destCity = tmpCity;
+      this.ticketKey.destCode = tmpCode;
     },
     // 点击搜索按钮
     searchBtn() {
@@ -238,11 +256,11 @@ export default {
     }
   }
 }
-/deep/ .el-tabs__content{
-    .el-tab-pane {
-        position: relative;
-        // background-color: pink;
-    }
+/deep/ .el-tabs__content {
+  .el-tab-pane {
+    position: relative;
+    // background-color: pink;
+  }
 }
 
 .serchAir {
