@@ -139,7 +139,6 @@ export default {
     },
     // 清空筛选条件
     resetFlightsData() {
-      console.log(999);
       this.org_airport = "";
       this.org_time = "";
       this.company = "";
