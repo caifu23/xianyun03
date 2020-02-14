@@ -4,7 +4,10 @@
       <!-- 机票列表 -->
       <el-col class="flights-list">
         <!-- 机票筛选条件 -->
-        <FlightsFilter :flights="flightData"></FlightsFilter>
+        <FlightsFilter
+          :flights="flightDataBack"
+          @changeflights="changeFlightsData"
+        ></FlightsFilter>
         <!-- 机票信息列表 -->
         <div class="flights-content">
           <!-- 机票头部 -->
@@ -16,7 +19,7 @@
             :key="index"
           ></FlightsItem>
           <!-- 分页 -->
-          <div class="divide-page">
+          <div class="divide-page" v-show="flightData.flights.length">
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
@@ -24,9 +27,13 @@
               :page-sizes="[5, 10, 20, 30]"
               :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="flightData.total"
+              :total="flightData.flights.length"
             >
             </el-pagination>
+          </div>
+          <!-- 无数据时提示 -->
+          <div class="nodata" v-show="flightData.flights.length === 0">
+              <p> 暂无航班信息! </p>
           </div>
         </div>
       </el-col>
@@ -47,6 +54,12 @@ export default {
     return {
       query: {}, // 查询关键字
       flightData: {
+        flights: [],
+        info: {},
+        options: {}
+      },
+      //   备份数据
+      flightDataBack: {
         flights: [],
         info: {},
         options: {}
@@ -73,7 +86,8 @@ export default {
         }).then(res => {
           console.log(res);
           if (res.data.info) {
-            this.flightData = res.data;
+            this.flightDataBack = { ...res.data }
+            this.flightData = { ...res.data };
           }
         });
       }
@@ -85,6 +99,10 @@ export default {
     // 改变当前第几页
     handleCurrentChange(val) {
       this.currentPage = val;
+    },
+    // 监听 筛选后数据
+    changeFlightsData(val) {
+      this.flightData.flights = val
     }
   },
   mounted() {
@@ -129,5 +147,12 @@ export default {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+}
+.nodata {
+    padding: 15px 0;
+    height: 500px;
+    font-size: 16px;
+    color: #666;
+    text-align: center;
 }
 </style>

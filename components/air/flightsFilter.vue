@@ -44,6 +44,7 @@
         </el-select>
       </el-col>
     </el-row>
+    <span> {{ filterArr }} </span>
   </div>
 </template>
 
@@ -79,6 +80,50 @@ export default {
     },
     company_options() {
       return this.flights.options.company || [];
+    },
+    // 监听筛选条件的变化,触发筛选函数
+    filterArr() {
+      this.filterFlights();
+      return "";
+    }
+  },
+  methods: {
+    //   筛选后的数组
+    filterFlights() {
+      //   筛选条件(数据)
+      let airport = this.org_airport;
+      let company = this.company;
+      let planeSize = this.plane_size;
+      let startTime = this.org_time && Number(this.org_time.split(",")[0]);
+      let endTime = this.org_time && Number(this.org_time.split(",")[1]);
+
+      //   遍历数组,过滤
+      let newFlights = this.flights.flights.filter(item => {
+        let flags = true;
+        // 当前飞机的起飞时间
+        let depTime = Number(item.dep_time.split(":")[0]);
+        // 判断飞机名
+        if (airport && airport !== item.org_airport_name) {
+          flags = false;
+        }
+        // 判断公司名
+        if (company && company !== item.airline_name) {
+          flags = false;
+        }
+        // 判断飞机机型
+        if (planeSize && planeSize !== item.plane_size) {
+          flags = false;
+        }
+        // 判断飞机起飞时间
+        if (this.org_time && (depTime < startTime || depTime >= endTime)) {
+          flags = false;
+        }
+        return flags;
+      });
+      //   console.log(this.flights.flights);
+      //   console.log(newFlights);
+      //   告诉父组件, 筛选后的数据
+      this.$emit("changeflights", newFlights);
     }
   }
 };
