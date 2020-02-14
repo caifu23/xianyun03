@@ -5,6 +5,7 @@
         >单程: {{ flights.info.departCity }} - {{ flights.info.destCity }} /
         {{ flights.info.departDate }}</el-col
       >
+      <!-- 起飞机场 -->
       <el-col :span="4">
         <el-select v-model="org_airport" placeholder="起飞机场">
           <el-option
@@ -14,6 +15,7 @@
           ></el-option>
         </el-select>
       </el-col>
+      <!-- 起飞时间 -->
       <el-col :span="4">
         <el-select v-model="org_time" placeholder="起飞时间">
           <el-option
@@ -24,6 +26,7 @@
           ></el-option>
         </el-select>
       </el-col>
+      <!-- 航空公司 -->
       <el-col :span="4">
         <el-select v-model="company" placeholder="航空公司">
           <el-option
@@ -33,6 +36,7 @@
           ></el-option>
         </el-select>
       </el-col>
+      <!-- 机型 -->
       <el-col :span="4">
         <el-select v-model="plane_size" placeholder="机型">
           <el-option
@@ -43,6 +47,14 @@
           ></el-option>
         </el-select>
       </el-col>
+    </el-row>
+    <el-row class="filter-reset">
+      <el-col :span="8"
+        >筛选:
+        <el-button type="primary" plain @click="resetFlightsData"
+          >撤销</el-button
+        ></el-col
+      >
     </el-row>
     <span> {{ filterArr }} </span>
   </div>
@@ -124,6 +136,19 @@ export default {
       //   console.log(newFlights);
       //   告诉父组件, 筛选后的数据
       this.$emit("changeflights", newFlights);
+    },
+    // 清空筛选条件
+    resetFlightsData() {
+      console.log(999);
+      this.org_airport = "";
+      this.org_time = "";
+      this.company = "";
+      this.plane_size = "";
+      this.sizeOptions = [
+        { name: "大", size: "L" },
+        { name: "中", size: "M" },
+        { name: "小", size: "S" }
+      ];
     }
   }
 };
@@ -132,5 +157,23 @@ export default {
 <style lang="less" scoped>
 .filter {
   padding: 15px 0;
+
+  .filter-options {
+    /deep/ input {
+      height: 28px;
+      line-height: 28px;
+    }
+    /deep/ .el-input__icon {
+      line-height: 28px;
+    }
+  }
+  .filter-reset {
+    button {
+      margin-left: 15px;
+      padding: 8px 15px;
+      font-size: 12px;
+      border-radius: 12px;
+    }
+  }
 }
 </style>
