@@ -79,7 +79,43 @@ export default {
         captcha: ""
       },
       select: "",
-      select2: ""
+      select2: "",
+      rules: {
+        //   验证用户
+        users: {
+          message: "乘机人信息不能为空！",
+          validator() {
+            let validFlag = true;
+            this.orderForm.users.forEach(val => {
+              if (!val.username || !val.id) {
+                validFlag = false;
+                return;
+              }
+            });
+            if (!validFlag) {
+            }
+            return validFlag;
+          }
+        },
+        contactName: {
+          message: "联系人不能为空！",
+          validator() {
+            return !!this.orderForm.contactName;
+          }
+        },
+        contactPhone: {
+          message: "手机号不能为空！",
+          validator() {
+            return !!this.orderForm.contactPhone;
+          }
+        },
+        captcha: {
+          message: "验证码不能为空！",
+          validator() {
+            return !!this.orderForm.captcha;
+          }
+        }
+      }
     };
   },
   methods: {
@@ -90,10 +126,30 @@ export default {
     // 提交订单
     submitFilght() {
       console.log(this.orderForm);
+      //   验证表单数据
+      this.validForm();
     },
     // 删除乘机人
     delAir(index) {
-        this.orderForm.users.splice(index, 1)
+      this.orderForm.users.splice(index, 1);
+    },
+    // 非空验证
+    validForm() {
+      let flag = true;
+      Object.keys(this.rules).forEach(val => {
+        if (!flag) {
+          return;
+        }
+        // 为空时
+        if (!this.rules[val].validator.call(this)) {
+          this.$message.error(this.rules[val].message);
+          flag = false;
+          return;
+        }
+      });
+      if (flag) {
+        console.log("提交订单");
+      }
     }
   }
 };
@@ -102,7 +158,7 @@ export default {
 <style lang="less" scoped>
 .orderForm {
   p {
-      line-height: 32px;
+    line-height: 32px;
   }
   h3 {
     margin-bottom: 20px;
@@ -128,8 +184,8 @@ export default {
       margin-bottom: 15px;
     }
     .air-add {
-        position: relative;
-        .del-airman {
+      position: relative;
+      .del-airman {
         position: absolute;
         top: 50%;
         right: -30px;
@@ -144,9 +200,9 @@ export default {
         background-color: #ccc;
         cursor: pointer;
         &:hover {
-            background-color: gray;
+          background-color: gray;
         }
-    }
+      }
     }
   }
   .air-insurance {
