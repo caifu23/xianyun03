@@ -127,7 +127,28 @@ export default {
     submitFilght() {
       console.log(this.orderForm);
       //   验证表单数据
-      this.validForm();
+      if (this.validForm()) {
+        //   添加信息
+        this.orderForm.air = this.$route.query.id;
+        this.orderForm.seat_xid = this.$route.query.seat_xid;
+        this.orderForm.invoice = false;
+        // 提交订单请求
+        this.$axios({
+          method: "POST",
+          url: "/airorders",
+          data: this.orderForm,
+          headers: {
+              Authorization: 'bearer ' + this.$store.state.user.userInfo.token
+          }
+        }).then(res => {
+          console.log(res);
+          if(res.data.message === '订单提交成功') {
+              this.$message.success('订单提交成功')
+          }else {
+              this.$message.success(res.data.message)
+          }
+        });
+      }
     },
     // 删除乘机人
     delAir(index) {
@@ -147,9 +168,7 @@ export default {
           return;
         }
       });
-      if (flag) {
-        console.log("提交订单");
-      }
+      return flag;
     },
     // 发送验证码
     sendCaptcha() {
@@ -157,12 +176,14 @@ export default {
         this.$message.error("手机号不能为空");
         return;
       }
-      console.log(this.orderForm.contactPhone)
-      this.$store.dispatch('user/sendCode', {tel: this.orderForm.contactPhone}).then(res => {
-          if(res.data.isValid === 1) {
-              this.$message.success('验证码是：000000')
+      console.log(this.orderForm.contactPhone);
+      this.$store
+        .dispatch("user/sendCode", { tel: this.orderForm.contactPhone })
+        .then(res => {
+          if (res.data.isValid === 1) {
+            this.$message.success("验证码是：000000");
           }
-      })
+        });
     }
   }
 };
