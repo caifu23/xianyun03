@@ -1,10 +1,16 @@
 <template>
-  <div class="flights-items" >
+  <div class="flights-items">
     <!-- 飞机简要信息 -->
-    <el-row class="flights-item" align="middle" type="flex" @click.native="detailShow = !detailShow">
-      <el-col :span="6" class="flights-number"
-        >{{ flightsList.airline_name }} {{ flightsList.flight_no }}</el-col
-      >
+    <el-row
+      class="flights-item"
+      align="middle"
+      type="flex"
+      @click.native="detailShow = !detailShow"
+    >
+      <el-col
+        :span="6"
+        class="flights-number"
+      >{{ flightsList.airline_name }} {{ flightsList.flight_no }}</el-col>
       <el-col :span="12">
         <el-row align="top" type="flex">
           <el-col :span="8">
@@ -30,32 +36,45 @@
         ￥
         <i class="flights-price">
           {{
-            flightsList.seat_infos[0].org_settle_price_child ||
-              flightsList.seat_infos[0].org_settle_price
-          }} </i
-        >起
+          flightsList.seat_infos[0].org_settle_price_child ||
+          flightsList.seat_infos[0].org_settle_price
+          }}
+        </i>起
       </el-col>
     </el-row>
-    <el-row class="flights-detail" align="middle" type="flex" v-if="detailShow">
-      <el-col :span="4">低价推荐</el-col>
-      <el-col :span="12" class="flights-company">
-        <span class="seat-level"> {{ flightsList.seat_infos[0].name }} </span> | {{ flightsList.seat_infos[0].supplierName }}
-      </el-col>
-      <el-col :span="4" class="seat-price">￥ {{ flightsList.seat_infos[0].org_settle_price }} </el-col>
-      <el-col :span="4">
-        <el-button type="warning" class="flights-btn" @click="orderFlights">选定</el-button>
-        <span class="flights-standby">剩余： {{ flightsList.seat_infos[0].discount }} </span>
-      </el-col>
-    </el-row>
+    <div class="flights-recommand" v-if="detailShow">
+      <el-row type="flex" align="middle" style="text-align: center;background-color: #f6f6f6;">
+        <el-col :span="5">低价推荐</el-col>
+        <el-col :span="19">
+          <el-row
+            class="flights-detail"
+            align="middle"
+            type="flex"
+            v-for="(item,index) in flightsList.seat_infos"
+            :key="index"
+          >
+            <el-col :span="13" class="flights-company">
+              <span class="seat-level">{{ item.name }}</span>
+              | {{ item.supplierName }}
+            </el-col>
+            <el-col :span="5" class="seat-price">￥ {{ item.org_settle_price }}</el-col>
+            <el-col :span="5">
+              <el-button type="warning" class="flights-btn" @click="orderFlights(item)">选定</el-button>
+              <span class="flights-standby">剩余： {{ item.discount }}</span>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-      return {
-          detailShow: false
-      }
+  data() {
+    return {
+      detailShow: false
+    };
   },
   props: {
     flightsList: {
@@ -83,16 +102,16 @@ export default {
     }
   },
   methods: {
-      //   选定按钮
-      orderFlights() {
-        this.$router.push({
-            path: '/air/order',
-            query: {
-                id: this.flightsList.id,
-                seat_xid: this.flightsList.seat_infos[0].seat_xid
-            }
-        })
-      }
+    //   选定按钮
+    orderFlights(val) {
+      this.$router.push({
+        path: "/air/order",
+        query: {
+          id: this.flightsList.id,
+          seat_xid: val.seat_xid
+        }
+      });
+    }
   }
 };
 </script>
@@ -134,6 +153,9 @@ export default {
 }
 .flights-detail {
   padding: 10px 0;
+  &:not(:last-of-type) {
+    border-bottom: 1px solid #eee;
+  }
   font-size: 14px;
   text-align: center;
   background-color: #f6f6f6;
@@ -148,15 +170,18 @@ export default {
     color: orange;
   }
   .flights-btn {
-      display: block;
-      margin: 5px auto;
-      padding-top: 5px; 
-      padding-bottom: 5px; 
-      font-size: 12px;
+    display: block;
+    margin: 5px auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 12px;
   }
   .flights-standby {
-      font-size: 13px;
-      color: #666;
+    font-size: 13px;
+    color: #666;
+  }
+  .flights-company {
+    text-align: left;
   }
 }
 </style>
