@@ -4,20 +4,13 @@
       <!-- 机票列表 -->
       <el-col class="flights-list">
         <!-- 机票筛选条件 -->
-        <FlightsFilter
-          :flights="flightDataBack"
-          @changeflights="changeFlightsData"
-        ></FlightsFilter>
+        <FlightsFilter :flights="flightDataBack" @changeflights="changeFlightsData"></FlightsFilter>
         <!-- 机票信息列表 -->
         <div class="flights-content">
           <!-- 机票头部 -->
           <FlightsListHead></FlightsListHead>
           <!-- 机票列表项 -->
-          <FlightsItem
-            v-for="(item, index) in currentFlights"
-            :flightsList="item"
-            :key="index"
-          ></FlightsItem>
+          <FlightsItem v-for="(item, index) in currentFlights" :flightsList="item" :key="index"></FlightsItem>
           <!-- 分页 -->
           <div class="divide-page" v-show="flightData.flights.length">
             <el-pagination
@@ -28,12 +21,11 @@
               :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="flightData.flights.length"
-            >
-            </el-pagination>
+            ></el-pagination>
           </div>
           <!-- 无数据时提示 -->
           <div class="nodata" v-show="flightData.flights.length === 0">
-              <p> 暂无航班信息! </p>
+            <p>暂无航班信息!</p>
           </div>
         </div>
       </el-col>
@@ -50,7 +42,7 @@
 import FlightsListHead from "@/components/air/flightsListHead";
 import FlightsItem from "@/components/air/flightsItem";
 import FlightsFilter from "@/components/air/flightsFilter";
-import FlightsAside from '@/components/air/flightsAside'
+import FlightsAside from "@/components/air/flightsAside";
 
 export default {
   data() {
@@ -89,7 +81,7 @@ export default {
         }).then(res => {
           console.log(res);
           if (res.data.info) {
-            this.flightDataBack = { ...res.data }
+            this.flightDataBack = { ...res.data };
             this.flightData = { ...res.data };
           }
         });
@@ -105,7 +97,7 @@ export default {
     },
     // 监听 筛选后数据
     changeFlightsData(val) {
-      this.flightData.flights = val
+      this.flightData.flights = val;
     }
   },
   mounted() {
@@ -129,6 +121,16 @@ export default {
         this.flightData.flights && this.flightData.flights.slice(start, end)
       );
     }
+  },
+  // 当前路由改变，但是该组件被复用时调用（组件缓存，复用该组件时，没有再次渲染）
+  beforeRouteUpdate(to, from, next) {
+    next();
+    // 路由变化，组件缓存了，
+    // 所以需要手动获取新的 查询结果
+    // 获取查询关键字
+    this.getQuery();
+    // 获取机票列表
+    this.getFlightsList();
   }
 };
 </script>
@@ -153,10 +155,10 @@ export default {
   margin-bottom: 20px;
 }
 .nodata {
-    padding: 15px 0;
-    height: 500px;
-    font-size: 16px;
-    color: #666;
-    text-align: center;
+  padding: 15px 0;
+  height: 500px;
+  font-size: 16px;
+  color: #666;
+  text-align: center;
 }
 </style>
