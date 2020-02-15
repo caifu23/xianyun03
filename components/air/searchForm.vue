@@ -227,6 +227,8 @@ export default {
         });
         return;
       }
+      // 添加记录到本地
+      this.$store.commit('air/addFlightsHistory', this.ticketKey)
       //   跳转搜索结果页
       this.$router.push({
         path: "/air/flights",
