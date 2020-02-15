@@ -39,7 +39,9 @@
       </el-col>
 
       <!-- 侧边栏: 历史查询 -->
-      <el-col class="flights-history">列2</el-col>
+      <el-col class="flights-history">
+        <FlightsAside></FlightsAside>
+      </el-col>
     </el-row>
   </div>
 </template>
@@ -48,6 +50,7 @@
 import FlightsListHead from "@/components/air/flightsListHead";
 import FlightsItem from "@/components/air/flightsItem";
 import FlightsFilter from "@/components/air/flightsFilter";
+import FlightsAside from '@/components/air/flightsAside'
 
 export default {
   data() {
@@ -114,7 +117,8 @@ export default {
   components: {
     FlightsListHead,
     FlightsItem,
-    FlightsFilter
+    FlightsFilter,
+    FlightsAside
   },
   computed: {
     //   当前飞机列表数组
