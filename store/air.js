@@ -8,6 +8,10 @@ export const state = () => {
 export const mutations = {
     // 添加搜索历史
     addFlightsHistory(state, val) {
-        state.history.push(val)
+        // 限制存储历史记录 5条，最新的在前面
+        if(state.history.length >= 5) {
+            state.history.pop()
+        }
+        state.history.unshift(val)
     }
 }
