@@ -48,7 +48,7 @@
         </el-form-item>
         <el-form-item label="手机">
           <el-input v-model="orderForm.contactPhone" class="contact-input">
-            <el-button slot="append">发送验证码</el-button>
+            <el-button slot="append" @click="sendCaptcha">发送验证码</el-button>
           </el-input>
         </el-form-item>
         <el-form-item label="验证码">
@@ -150,6 +150,19 @@ export default {
       if (flag) {
         console.log("提交订单");
       }
+    },
+    // 发送验证码
+    sendCaptcha() {
+      if (!this.orderForm.contactPhone) {
+        this.$message.error("手机号不能为空");
+        return;
+      }
+      console.log(this.orderForm.contactPhone)
+      this.$store.dispatch('user/sendCode', {tel: this.orderForm.contactPhone}).then(res => {
+          if(res.data.isValid === 1) {
+              this.$message.success('验证码是：000000')
+          }
+      })
     }
   }
 };

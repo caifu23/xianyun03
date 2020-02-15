@@ -38,6 +38,9 @@ export const actions = {
     },
     // 发送验证码
     sendCode(store, data) {
+        // data: {
+        //     tel: 手机号
+        // }
         return this.$axios({
             method: 'POST',
             url: '/captchas',
