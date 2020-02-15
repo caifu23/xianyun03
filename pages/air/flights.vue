@@ -127,6 +127,7 @@ export default {
     next();
     // 路由变化，组件缓存了，
     // 所以需要手动获取新的 查询结果
+    this.currentPage = 1;
     // 获取查询关键字
     this.getQuery();
     // 获取机票列表
