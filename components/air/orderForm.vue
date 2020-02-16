@@ -142,10 +142,8 @@ export default {
           }
         }).then(res => {
           console.log(res);
-          if (res.data.message === "订单提交成功") {
+          if (res && res.data.message === "订单提交成功") {
             this.$message.success("订单提交成功");
-          } else {
-            this.$message.success(res.data.message);
           }
         });
       }
