@@ -53,7 +53,7 @@ export default {};
   font-size: 16px;
   color: #666;
   border: 1px solid #ccc;
-  padding: 15px;
+  padding: 15px 15px 0;
   .ord-left {
     text-align: left;
   }
@@ -76,9 +76,14 @@ export default {};
     }
   }
   .ord-price {
-      padding: 10px 0;
-      border-bottom: 1px dashed #ccc;
       font-size: 14px;
+      &:not(:last-of-type) {
+        border-bottom: 1px dashed #ccc;
+        padding: 10px 0;
+      }
+      &:last-of-type {
+        padding: 15px 0;
+      }
       .total {
           font-size: 32px;
           color: orange;
