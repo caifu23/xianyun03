@@ -3,6 +3,7 @@ export const state = () => {
         // 机票搜索历史
         history: [],
         infoData: {}, //机票数据 
+        totalPrice: 0
     }
 }
 
@@ -22,5 +23,9 @@ export const mutations = {
     // 添加订单数据
     setInfoData(state, data) {
         state.infoData = data
+    },
+    // 订单总价格
+    setTotalPrice(state, data) {
+        state.totalPrice = data
     }
 }

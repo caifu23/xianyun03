@@ -35,9 +35,12 @@
         <h3>保险</h3>
         <el-form-item>
           <el-checkbox-group v-model="orderForm.insurances">
-            <el-checkbox :label="item.id" border 
-            v-for="(item, index) in infoData.insurances" 
-            :key="index">{{item.type}} ：￥{{item.price}}/份×1 最高赔付{{item.compensation}}万</el-checkbox>
+            <el-checkbox
+              :label="item.id"
+              border
+              v-for="(item, index) in infoData.insurances"
+              :key="index"
+            >{{item.type}} ：￥{{item.price}}/份×1 最高赔付{{item.compensation}}万</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </div>
@@ -60,16 +63,17 @@
     <div class="submit">
       <el-button type="primary" @click="submitFilght">提交订单</el-button>
     </div>
+    <span style="line-height:0;font-size:0">{{ totalPrice }}</span>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-      infoData: {
-          type: Object,
-          default: {}
-      }
+    infoData: {
+      type: Object,
+      default: {}
+    }
   },
   data() {
     return {
@@ -93,7 +97,7 @@ export default {
           message: "乘机人信息不能为空！",
           validator() {
             let validFlag = true;
-            this.orderForm.users.forEach(val => {
+            orderForm.users.forEach(val => {
               if (!val.username || !val.id) {
                 validFlag = false;
                 return;
@@ -127,26 +131,26 @@ export default {
     submitFilght() {
       console.log(this.orderForm);
       //   验证表单数据
-      if (this.validForm()) {
-        //   添加信息
-        this.orderForm.air = this.$route.query.id;
-        this.orderForm.seat_xid = this.$route.query.seat_xid;
-        this.orderForm.invoice = false;
-        // 提交订单请求
-        this.$axios({
-          method: "POST",
-          url: "/airorders",
-          data: this.orderForm,
-          headers: {
-            Authorization: "Bearer " + this.$store.state.user.userInfo.token
-          }
-        }).then(res => {
-          console.log(res);
-          if (res && res.data.message === "订单提交成功") {
-            this.$message.success("订单提交成功");
-          }
-        });
-      }
+      //   if (this.validForm()) {
+      //     //   添加信息
+      //     this.orderForm.air = this.$route.query.id;
+      //     this.orderForm.seat_xid = this.$route.query.seat_xid;
+      //     this.orderForm.invoice = false;
+      //     // 提交订单请求
+      //     this.$axios({
+      //       method: "POST",
+      //       url: "/airorders",
+      //       data: this.orderForm,
+      //       headers: {
+      //         Authorization: "Bearer " + this.$store.state.user.userInfo.token
+      //       }
+      //     }).then(res => {
+      //       console.log(res);
+      //       if (res && res.data.message === "订单提交成功") {
+      //         this.$message.success("订单提交成功");
+      //       }
+      //     });
+      //   }
     },
     // 删除乘机人
     delAir(index) {
@@ -184,13 +188,37 @@ export default {
           }
         });
     }
+  },
+  computed: {
+    // 订单总价格
+    totalPrice() {
+      let infoData = this.infoData;
+      let orderForm = this.orderForm;
+      let price = 0;
+
+      if (!infoData.insurances) {
+        return;
+      }
+      //   成人机票价格 机油
+      price = infoData.airorders.price + infoData.airport_tax_audlet;
+      // 保险
+      infoData.insurances.forEach(val => {
+        if (orderForm.insurances.indexOf(val.id) > -1) {
+          price += val.price;
+        }
+      });
+      price = price * orderForm.users.length;
+      //   存储总价格，便于订单详情模块 数据渲染
+      this.$store.commit("air/setTotalPrice", price);
+      return price;
+    }
   }
 };
 </script>
 
 <style lang="less" scoped>
 .orderForm {
-    padding-right: 30px;
+  padding-right: 30px;
   p {
     line-height: 32px;
   }

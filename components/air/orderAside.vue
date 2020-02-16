@@ -29,7 +29,7 @@
     </el-row>
     <el-row type="flex" justify="space-between" class="ord-price">
       <el-col class="ord-left">成人机票</el-col>
-      <el-col style="text-align: center">￥{{infoData.base_price}}</el-col>
+      <el-col style="text-align: center">￥{{ infoData.airorders && infoData.airorders.price}}</el-col>
       <el-col class="ord-right">x1</el-col>
     </el-row>
     <el-row type="flex" justify="space-between" class="ord-price">
@@ -39,7 +39,7 @@
     </el-row>
     <el-row type="flex" justify="space-between" class="ord-price" align="middle">
       <el-col class="ord-left">应付总额</el-col>
-      <el-col class="ord-right total">￥--</el-col>
+      <el-col class="ord-right total">￥ {{ $store.state.air.totalPrice }} </el-col>
     </el-row>
   </div>
 </template>
@@ -48,7 +48,7 @@
 export default {
   computed: {
     infoData() {
-      return this.$store.state.air.infoData;
+      return this.$store.state.air.infoData || {};
     },
     // 飞机时长
     intervalTime() {
