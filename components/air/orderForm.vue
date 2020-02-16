@@ -190,6 +190,7 @@ export default {
 
 <style lang="less" scoped>
 .orderForm {
+    padding-right: 30px;
   p {
     line-height: 32px;
   }

@@ -6,7 +6,9 @@
             <OrderForm :infoData="infoData" />
           </el-col>
           <!-- 侧边栏 订单结算 -->
-          <el-col :span="9"></el-col>
+          <el-col :span="9">
+              <OrderAside />
+          </el-col>
       </el-row>
    
     
@@ -15,6 +17,7 @@
 
 <script>
 import OrderForm from '@/components/air/orderForm'
+import OrderAside from '@/components/air/orderAside'
 export default {
     data () {
         return {
@@ -22,7 +25,8 @@ export default {
         }
     },
     components: {
-        OrderForm
+        OrderForm,
+        OrderAside
     },
     mounted () {
         // 获取订单数据
