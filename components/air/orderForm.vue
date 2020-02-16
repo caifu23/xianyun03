@@ -52,7 +52,7 @@
         </el-form-item>
         <el-form-item label="手机">
           <el-input v-model="orderForm.contactPhone" class="contact-input">
-            <el-button slot="append" @click="sendCaptcha">发送验证码</el-button>
+            <el-button slot="append" @click="sendCaptcha" style="width: 110px;">{{sendCaptchaText}}</el-button>
           </el-input>
         </el-form-item>
         <el-form-item label="验证码">
@@ -119,7 +119,8 @@ export default {
           message: "验证码不能为空！",
           validator: () => !!this.orderForm.captcha
         }
-      }
+      },
+      sendCaptchaText: "发送验证码"
     };
   },
   methods: {
@@ -131,26 +132,26 @@ export default {
     submitFilght() {
       console.log(this.orderForm);
       //   验证表单数据
-      //   if (this.validForm()) {
-      //     //   添加信息
-      //     this.orderForm.air = this.$route.query.id;
-      //     this.orderForm.seat_xid = this.$route.query.seat_xid;
-      //     this.orderForm.invoice = false;
-      //     // 提交订单请求
-      //     this.$axios({
-      //       method: "POST",
-      //       url: "/airorders",
-      //       data: this.orderForm,
-      //       headers: {
-      //         Authorization: "Bearer " + this.$store.state.user.userInfo.token
-      //       }
-      //     }).then(res => {
-      //       console.log(res);
-      //       if (res && res.data.message === "订单提交成功") {
-      //         this.$message.success("订单提交成功");
-      //       }
-      //     });
-      //   }
+      if (this.validForm()) {
+        //   添加信息
+        this.orderForm.air = this.$route.query.id;
+        this.orderForm.seat_xid = this.$route.query.seat_xid;
+        this.orderForm.invoice = false;
+        // 提交订单请求
+        this.$axios({
+          method: "POST",
+          url: "/airorders",
+          data: this.orderForm,
+          headers: {
+            Authorization: "Bearer " + this.$store.state.user.userInfo.token
+          }
+        }).then(res => {
+          console.log(res);
+          if (res && res.data.message === "订单提交成功") {
+            this.$message.success("订单提交成功");
+          }
+        });
+      }
     },
     // 删除乘机人
     delAir(index) {
@@ -180,6 +181,21 @@ export default {
         this.$message.error("手机号不能为空");
         return;
       }
+      if(this.sendCaptchaText !== "发送验证码") {
+        //   当前在倒计时中，不可以再次触发 发送验证码
+        return;
+      }
+      //   修改按钮文本：倒计时
+      let count = 10;
+      let timer = setInterval(() => {
+        if (count === 1) {
+          this.sendCaptchaText = "发送验证码";
+          clearInterval(timer);
+          return;
+        }
+        this.sendCaptchaText = --count + "s";
+      }, 1000);
+      // 发送请求
       this.$store
         .dispatch("user/sendCode", { tel: this.orderForm.contactPhone })
         .then(res => {
