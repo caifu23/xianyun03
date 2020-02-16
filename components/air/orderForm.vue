@@ -35,8 +35,9 @@
         <h3>保险</h3>
         <el-form-item>
           <el-checkbox-group v-model="orderForm.insurances">
-            <el-checkbox label="1" border>航空意外险：￥30/份×1 最高赔付260万</el-checkbox>
-            <el-checkbox label="2" border>航空延误险：￥30/份×1 最高赔付300元</el-checkbox>
+            <el-checkbox :label="item.id" border 
+            v-for="(item, index) in infoData.insurances" 
+            :key="index">{{item.type}} ：￥{{item.price}}/份×1 最高赔付{{item.compensation}}万</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </div>
@@ -64,6 +65,12 @@
 
 <script>
 export default {
+  props: {
+      infoData: {
+          type: Object,
+          default: {}
+      }
+  },
   data() {
     return {
       orderForm: {
