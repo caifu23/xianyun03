@@ -2,112 +2,94 @@
   <el-form :model="loginForm" :rules="rules" ref="loginForm">
     <!-- 用户名/手机 输入框 -->
     <el-form-item prop="username">
-      <el-input
-        v-model="loginForm.username"
-        autocomplete="off"
-        placeholder="用户名/手机"
-      ></el-input>
+      <el-input v-model="loginForm.username" autocomplete="off" placeholder="用户名/手机"></el-input>
     </el-form-item>
     <!-- 密码输入框 -->
     <el-form-item prop="password">
-      <el-input
-        type="password"
-        v-model="loginForm.password"
-        autocomplete="off"
-        placeholder="密码"
-      ></el-input>
+      <el-input type="password" v-model="loginForm.password" autocomplete="off" placeholder="密码"></el-input>
     </el-form-item>
     <el-form-item>
       <p class="forgetPass">
         <a href="#">忘记密码</a>
       </p>
-      <el-button
-        type="primary"
-        @click="submitForm('loginForm')"
-        class="loginBtn"
-        >登录</el-button
-      >
+      <el-button type="primary" @click="submitForm('loginForm')" class="loginBtn">登录</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script>
 export default {
-    data() {
-      // 验证手机
-      var validatePhone = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入用户名'));
-        } else {
-          callback();
-        }
-      };
-      // 验证密码
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
-        } else {
-          callback();
-        }
-      };
+  data() {
+    // 验证手机
+    var validatePhone = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入用户名"));
+      } else {
+        callback();
+      }
+    };
+    // 验证密码
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        callback();
+      }
+    };
 
-      return {
-        loginForm: {
-          username: '',   // 用户名
-          password: '',   // 密码
-        },
-        rules: {
-          username: [
-            { validator: validatePhone, trigger: 'blur' }
-          ],
-          password: [
-            { validator: validatePass, trigger: 'blur' }
-          ]
-        }
-      };
-    },
-    methods: {
-      // 点击登录按钮
-      submitForm(formName) {
-        this.$refs[formName].validate( (valid) => {
-          if (valid) {
-            // 登录请求
-            // this.login(this[formName])
-            // 或--
-            // 登录(异步)请求由 store里的actions处理
-            this.$store.dispatch('user/login', this[formName]).then((res) => {
-                // console.log(res)
-                if(res.data.token) {
-                    this.$message.success('登录成功')
-                    // 跳转主页
-                    this.$router.push('/')
-                }
-            })
-
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+    return {
+      loginForm: {
+        username: "", // 用户名
+        password: "" // 密码
       },
-     //  登录请求
-     async login(data) {
-         let resLogin = await this.$axios({
-                method: 'POST',
-                url: '/accounts/login',
-                data: data
-            })
-            console.log(resLogin)
-            if(resLogin.data.token) {
-                let { data } = resLogin
-                // 将当前用户数据存储到store
-                this.$store.commit('user/setUserInfo', data)
-                // 跳转主页
-                // this.$router.push('/')
+      rules: {
+        username: [{ validator: validatePhone, trigger: "blur" }],
+        password: [{ validator: validatePass, trigger: "blur" }]
+      }
+    };
+  },
+  methods: {
+    // 点击登录按钮
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // 登录请求
+          // this.login(this[formName])
+          // 或--
+          // 登录(异步)请求由 store里的actions处理
+          this.$store.dispatch("user/login", this[formName]).then(res => {
+            if (res.data.token) {
+              this.$message.success("登录成功");
+              // 跳转 来源页（机票订单页）或 主页
+              // replace相比push方法，login的url会被替换，
+              // 也就是说url历史记录里没有login的url
+              this.$router.replace(this.$route.query.returnUrl || '/')
             }
-     }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    //  登录请求
+    async login(data) {
+      let resLogin = await this.$axios({
+        method: "POST",
+        url: "/accounts/login",
+        data: data
+      });
+      console.log(resLogin);
+      if (resLogin.data.token) {
+        let { data } = resLogin;
+        // 将当前用户数据存储到store
+        this.$store.commit("user/setUserInfo", data);
+        // 跳转主页
+        // this.$router.push('/')
+      }
     }
   }
+};
 </script>
 
 <style lang="less">
