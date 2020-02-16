@@ -92,28 +92,21 @@ export default {
                 return;
               }
             });
-            if (!validFlag) {
-            }
             return validFlag;
           }
         },
         contactName: {
           message: "联系人不能为空！",
-          validator() {
-            return !!this.orderForm.contactName;
-          }
+          //   改验证方法，返回 字符串的布尔值，即判断是否有值
+          validator: () => !!this.orderForm.contactName
         },
         contactPhone: {
           message: "手机号不能为空！",
-          validator() {
-            return !!this.orderForm.contactPhone;
-          }
+          validator: () => !!this.orderForm.contactPhone
         },
         captcha: {
           message: "验证码不能为空！",
-          validator() {
-            return !!this.orderForm.captcha;
-          }
+          validator: () => !!this.orderForm.captcha
         }
       }
     };
@@ -138,14 +131,14 @@ export default {
           url: "/airorders",
           data: this.orderForm,
           headers: {
-              Authorization: 'bearer ' + this.$store.state.user.userInfo.token
+            Authorization: "Bearer " + this.$store.state.user.userInfo.token
           }
         }).then(res => {
           console.log(res);
-          if(res.data.message === '订单提交成功') {
-              this.$message.success('订单提交成功')
-          }else {
-              this.$message.success(res.data.message)
+          if (res.data.message === "订单提交成功") {
+            this.$message.success("订单提交成功");
+          } else {
+            this.$message.success(res.data.message);
           }
         });
       }
@@ -157,6 +150,8 @@ export default {
     // 非空验证
     validForm() {
       let flag = true;
+      //   遍历rules验证规则，
+      //   如果出现为空，则不再继续执行，并给出提示
       Object.keys(this.rules).forEach(val => {
         if (!flag) {
           return;
@@ -176,7 +171,6 @@ export default {
         this.$message.error("手机号不能为空");
         return;
       }
-      console.log(this.orderForm.contactPhone);
       this.$store
         .dispatch("user/sendCode", { tel: this.orderForm.contactPhone })
         .then(res => {
