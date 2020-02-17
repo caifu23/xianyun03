@@ -97,7 +97,7 @@ export default {
           message: "乘机人信息不能为空！",
           validator() {
             let validFlag = true;
-            orderForm.users.forEach(val => {
+            this.orderForm.users.forEach(val => {
               if (!val.username || !val.id) {
                 validFlag = false;
                 return;
@@ -149,6 +149,17 @@ export default {
           console.log(res);
           if (res && res.data.message === "订单提交成功") {
             this.$message.success("订单提交成功");
+            let { data, data: { id } } = res.data
+            // console.log(data, id)
+            this.$store.commit('air/setOrderDetail', data)
+            setTimeout(() => {
+              this.$router.push({
+                path: '/air/pay',
+                query: {
+                  id
+                }
+              })
+            }, 500);
           }
         });
       }
