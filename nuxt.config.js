@@ -33,7 +33,8 @@ export default {
   plugins: [
     '@/plugins/element-ui',
     '~/plugins/axios',  // 自定义axios配置
-    { src: '~/plugins/localStorage.js', ssr: false } // 实现本地存储插件
+    { src: '~/plugins/localStorage.js', ssr: false }, // 实现本地存储插件
+    { src: '~/plugins/vue-editor.js', mode: 'client' } // 富文本编辑器 客户端模式(浏览器)
   ],
   /*
   ** Nuxt.js dev-modules
